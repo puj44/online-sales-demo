@@ -8,6 +8,8 @@ import {
 import "./index.css";
 import Home from './routes/Home';
 import CreateForm from './routes/CreateForm';
+import 'react-toastify/dist/ReactToastify.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 const router = createBrowserRouter([
   {
@@ -23,7 +25,6 @@ const router = createBrowserRouter([
     element: <CreateForm/>,
   },
 ]);
-
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

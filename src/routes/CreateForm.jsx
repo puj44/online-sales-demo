@@ -3,6 +3,7 @@ import { FormContext } from '../Contexts';
 import { useParams } from 'react-router-dom';
 import FieldModal from '../Components/FieldModal';
 import { toast } from 'react-toastify';
+
 function CreateForm({params}) {
   const form = useContext(FormContext);
   const {id} = useParams();
@@ -23,7 +24,7 @@ function CreateForm({params}) {
   const handleModalClose = () =>{
     setShow(false);
   }
-  const handleSubmit=(data)=>{
+  const handleSubmit=  (data)=>{
     let form = formData;
     if(!form.formFields){
         form.formFields = [];
@@ -34,11 +35,12 @@ function CreateForm({params}) {
             isValid = false;
         }
     });
+    
     if(!isValid){
         toast.error("Label already exists!",
             {
                 position: "top-right",
-                autoClose: 4000,
+                autoClose: 5000,
                 hideProgressBar: true,
                 closeOnClick: true,
             }

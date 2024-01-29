@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
-
+import CheckErrors from '../Common/CheckErrors';
+import { toast } from 'react-toastify';
 function FieldModal({handleSubmit, formData, handleModalClose, data}) {
     const [fieldData, setFieldData] = useState({});
     const selectFields = useMemo(()=>{
@@ -133,6 +134,34 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
     data[field.fieldName] = field.type === "select"? val?.toString()?.toLowerCase(): val;
     setFieldData({...data});
   }
+
+  const onSubmit = async (e) =>{
+    const isValid = await CheckErrors(fields, fieldData, true);
+    console.log("here",isValid);
+    if(Array.isArray(isValid) && isValid?.length > 0){
+        toast.error(
+            <ul>
+                {
+                    isValid.map((err)=>{
+                        return(
+                            <li>{err}</li>
+                        )
+                    })
+                }
+            </ul>
+            ,
+            {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+            }
+        )
+        
+    }else{
+        handleSubmit(fieldData)
+    }
+  }
   return (
     <div className="modal-bg">
         <div className='modal-outer'>
@@ -145,7 +174,7 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
                             alt={"cross"}
                         />
                     </div>
-                    <form className='d-flex' onSubmit={()=>{}} style={{padding:"50px"}}>
+                    <form className='d-flex'  style={{padding:"50px"}}>
                         {
                             fields.map((d,idx)=>{
                               return(
@@ -168,7 +197,12 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
                                                 />
                                             //select field
                                             : d.type === "select"?
-                                                <select onSelect={(e)=>{onChange(e.target.value,d)}} onChange={(e)=>{onChange(e.target.value,d)}} value={fieldData?.[d.fieldName] }>
+                                                <select   
+                                                    name={d.fieldName} 
+                                                    onSelect={(e)=>{onChange(e.target.value,d)}} 
+                                                    onChange={(e)=>{onChange(e.target.value,d)}}
+                                                    value={fieldData?.[d.fieldName] }
+                                                >
                                                     <option selected disabled>{"Select "+d.label}</option>
                                                     {
                                                         d.options.map((o,index)=>{
@@ -188,7 +222,7 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
                         }
                         <div style={{display:"flex",flexDirection:"row",justifyContent:"end",marginTop:"25px"}}>
                             <button onClick={()=>{ handleModalClose()}} className='btn btn-primary'>Close</button>
-                            <button onClick={()=>{ handleSubmit(fieldData)}} className='btn btn-secondary' style={{marginLeft:"10px"}}>Add</button>
+                            <button  className='btn btn-secondary' onClick={(e)=>{e.stopPropagation(); e.preventDefault(); onSubmit(e)}} style={{marginLeft:"10px"}}>Add</button>
                         </div>
                     </form>
                 </div>
