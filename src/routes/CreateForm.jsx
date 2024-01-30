@@ -1,11 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { FormContext } from '../Contexts';
+import React, {  useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import FieldModal from '../Components/FieldModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
+import getForm from '../Common/getForm';
 function CreateForm({params}) {
-  const form = useContext(FormContext);
+    const form = useMemo(()=>{
+        return getForm();
+      },[sessionStorage])
   const {id} = useParams();
   const [formData, setFormData] = useState({});
   const [show,setShow] = useState(false);
@@ -23,14 +25,14 @@ function CreateForm({params}) {
   const handleModalClose = () =>{
     setShow(false);
   }
-  const handleSubmit=  (data)=>{
+  const handleSubmit=  (data, isEdit)=>{
     let form = formData;
     if(!form.formFields){
         form.formFields = [];
     }
     let isValid = true;
     form.formFields.filter((fd)=>{
-        if(fd.label?.toLowerCase() === data.label?.toLowerCase()){
+        if(!isEdit && (fd.label?.toLowerCase() === data.label?.toLowerCase())){
             isValid = false;
         }
     });
@@ -45,17 +47,30 @@ function CreateForm({params}) {
             }
         )
     }else{
-        const splitLabel = data.label.split(" ");
-        data.fieldName = splitLabel.join("");
-        form.formFields.push(data);
-        setFormData({...form});
+        if(isEdit){
+            const fields = form.formFields?.map((nf)=>{
+                let obj = nf;
+                if(nf.fieldName === isEdit.fieldName){
+                    obj = data;
+                }
+                return obj;
+            }) ?? [];
+            setFormData({...formData, "formFields":[...fields]})
+        }else{
+
+            const splitLabel = data.label.split(" ");
+            data.fieldName = splitLabel.join("").toLowerCase();
+            form.formFields.push(data);
+            setFormData({...form});
+        }
+        toast.success("Form fields updated!");
         handleModalClose();
     }
   }
 
   const handleDeleteField = (idx) =>{
     let form = formData;
-    delete form?.formFields?.[idx];
+    form.formFields?.splice(idx,1)
     setFormData({...form})
   }
 
@@ -103,9 +118,10 @@ function CreateForm({params}) {
             <div className='input-card' style={{cursor:"pointer"}} onClick={()=>{setShow(true);}}>+ Add Input Field</div>
         </div>
         <div style={{display:"flex",justifyContent:"end",marginTop:"40px"}}>
+            <button className='btn btn-primary' onClick={(e)=>{e.preventDefault(); e.stopPropagation(); navigate("/")}}>Go back</button>
             <button className='btn btn-secondary' 
                 disabled={(formData?.formFields?.length > 0 && formData?.formName)?false:true}
-                style={{background:(formData?.formFields?.length > 0 && formData?.formName)?"":"rgb(187 190 191)"}}
+                style={{background:(formData?.formFields?.length > 0 && formData?.formName)?"":"rgb(187 190 191)",marginLeft:"10px"}}
                 onClick={()=>{onSave()}}
             >Save
             </button>

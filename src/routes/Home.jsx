@@ -1,9 +1,11 @@
-import React, { useContext } from 'react'
-import { FormContext } from '../Contexts'
+import React, {  useEffect, useMemo } from 'react'
+import getForm from '../Common/getForm'
 
 function Home() {
-  const form = useContext(FormContext);
-  
+  const form = useMemo(()=>{
+    return getForm();
+  },[sessionStorage])
+
   return (
     <div className='d-flex'>
         <div className="heading">

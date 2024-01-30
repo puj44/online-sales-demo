@@ -83,6 +83,15 @@ a{
         margin-bottom:5px;
     }
 }
+.checkbox{
+    display: flex;
+    label{
+        margin-left:4px;
+    }
+    justify-content: start;
+    flex-direction: row;
+    div:not(:first-child) { margin-left: 10px; }
+}
 
 .close-btn{
     background-color: #fff;

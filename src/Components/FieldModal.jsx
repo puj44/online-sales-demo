@@ -28,11 +28,11 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
       },
       {
           "label":"Display When",
-          "fieldName":"display_if",
+          "fieldName":"display_if_name",
           customField:(onChange,data)=>{
             let options = [];
             selectFields?.filter((opt)=>{ 
-                if(opt.fieldName === data.display_if_name){
+                if(opt.fieldName?.toLowerCase() === data.display_if_name){
                     options = opt?.options?.split(",");
                 } 
                 return opt;
@@ -71,7 +71,8 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
                 }
             </div>
           },
-          show: selectFields?.length 
+          show: selectFields?.length,
+          notRequired:true
       },
       {
           "label":"Options(Comma Seperated)",
@@ -120,7 +121,7 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
           "label":"File Type",
           "fieldName":"file_type",
           "type":"select",
-          "options":["png","jpg","xlsx","mp4","pdf"],
+          "options":["image","excel","video","document","audio"],
           show:fieldData?.field?.toLowerCase() === "file"
       },
       
@@ -137,7 +138,6 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
 
   const onSubmit = async (e) =>{
     const isValid = await CheckErrors(fields, fieldData, true);
-    console.log("here",isValid);
     if(Array.isArray(isValid) && isValid?.length > 0){
         toast.error(
             <ul>
@@ -159,7 +159,8 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
         )
         
     }else{
-        handleSubmit(fieldData)
+        console.log("here123",data);
+        handleSubmit(fieldData, data?? false)
     }
   }
   return (
@@ -203,7 +204,7 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
                                                     onChange={(e)=>{onChange(e.target.value,d)}}
                                                     value={fieldData?.[d.fieldName] }
                                                 >
-                                                    <option selected disabled>{"Select "+d.label}</option>
+                                                    <option selected disabled>{d.label}</option>
                                                     {
                                                         d.options.map((o,index)=>{
                                                             return(
@@ -222,7 +223,7 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
                         }
                         <div style={{display:"flex",flexDirection:"row",justifyContent:"end",marginTop:"25px"}}>
                             <button onClick={()=>{ handleModalClose()}} className='btn btn-primary'>Close</button>
-                            <button  className='btn btn-secondary' onClick={(e)=>{e.stopPropagation(); e.preventDefault(); onSubmit(e)}} style={{marginLeft:"10px"}}>Add</button>
+                            <button  className='btn btn-secondary' onClick={(e)=>{e.stopPropagation(); e.preventDefault(); onSubmit(e)}} style={{marginLeft:"10px"}}>{`${data? "Edit":"Add"}`}</button>
                         </div>
                     </form>
                 </div>

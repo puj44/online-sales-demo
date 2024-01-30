@@ -11,6 +11,7 @@ import CreateForm from './routes/CreateForm';
 import 'react-toastify/dist/ReactToastify.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import TestForm from './routes/TestForm';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/edit-form/:id",
     element: <CreateForm/>,
+  },
+  {
+    path: "/test-form/:id",
+    element: <TestForm />,
   },
 ]);
 
