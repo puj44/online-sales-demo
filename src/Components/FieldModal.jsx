@@ -84,7 +84,7 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
           "label":"Type",
           "fieldName":"type",
           "type":"select",
-          "options":["Text","Number","Email"],
+          "options":["Text","Number","Email","Contact Number"],
           show:fieldData?.field?.toLowerCase() === "input"
       },
       {
@@ -190,7 +190,7 @@ function FieldModal({handleSubmit, formData, handleModalClose, data}) {
                                                 <input value={fieldData?.[d.fieldName] ?? ""} 
                                                     min={1} 
                                                     defaultValue={d.defaultValue ?? ""} 
-                                                    type={d.inputType ?? "text"} 
+                                                    type={d.inputType === "Contact Number"?"tel" :d.inputType ?? "text"} 
                                                     placeholder={d.label} 
                                                     onChange={(e)=>{onChange(e.target.value,d)}} 
                                                     required 
