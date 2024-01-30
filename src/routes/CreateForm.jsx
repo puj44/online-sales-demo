@@ -47,6 +47,7 @@ function CreateForm({params}) {
             }
         )
     }else{
+        data.label = data.required?.toLowerCase() === "yes" ? (data.label).concat("*"): data.label;
         if(isEdit){
             const fields = form.formFields?.map((nf)=>{
                 let obj = nf;
